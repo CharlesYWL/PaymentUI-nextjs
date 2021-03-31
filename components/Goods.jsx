@@ -1,32 +1,44 @@
-import { Button } from 'bootstrap';
+import { Button } from '@material-ui/core';
 import Link from 'next/link';
-import logo from 'public/img/HM_Black.png';
+import React,{useEffect, useState} from 'react';
+import {centToDollar} from 'utils';
 
 
-const goods = [
-  {id:"sampleTest0",price:5},{id:"sampleTest1",price:10},{id:"sampleTest2",price:15}
-]
 
-export default function Goods () {
+export default function Goods (initialState) {
+    const [goods, setGoods] = useState([]);
+    const [isLoading,setIsLoading] = useState(true);
+
+    useEffect(() => {
+      console.log(initialState);
+      fetch('http://localhost:8000/stripe/get-goods').then(res=>{
+        return res.json()
+      }).then(res=>{
+        console.log(res);
+        if ('itemList' in res) setGoods(res.itemList)
+        else throw new Error("no itemList in response from backend")
+        setIsLoading(false);
+      }).catch(err=>{
+        console.log(err)
+      })
+      return () => {
+      }
+    }, []);
+
     return(
         <div className="goods-wrapper">
-          {goods.map((good,idx)=>{
-
-            return <Link href={"/goods/"+good.id} key={"good"-good.id}>
-            <div className="good-box">
-              
-              <img src={logo} alt="img"/>
-              <div>{good.id}</div>
-              <div>${good.price}</div>
-              
+          {goods ? goods.map((good,idx)=>{
+            return <Link href={"/checkout/"+good.name} key={idx}>
+            <Button>
+            <div className="good-box shadow bg-white rounded">
+              <img className="image" src={good.data.product_data.images[0]} alt="img"/>
+              <div>{good.name}</div>
+              <div>${centToDollar(good.data.unit_amount)}</div>
             </div>
+            </Button>
             </Link>
-          })}
+          }): <div></div> }
+
         </div>
     )
 }
-
-// export async function getServerSideProps(context) {
-
-//   return { props: { goods:Goods  } };
-// }
