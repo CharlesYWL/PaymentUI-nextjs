@@ -1,6 +1,7 @@
 import { PayPalButton } from 'react-paypal-button-v2';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { request } from 'utils';
 
 const paypalKey =
   'Abw-WJ2661GsHGr7-Kl7Ooc8t1U5kBvv3olF6jGE1O3Qtt3yPx0R5yYzcjHmgrRskjjh5MZLDwBvGKVO';
@@ -30,17 +31,13 @@ export default function MyPaypalButton({ price }) {
             alert('Transaction completed by ' + details.payer.name.given_name);
             // OPTIONAL: Call your server to save the transaction
             console.log(data);
-            return fetch(
-              'http://localhost:8000/paypal/paypal-transaction-complete',
-              {
-                method: 'post',
-                body: JSON.stringify({
-                  orderID: data.orderID,
-                }),
-              }
-            ).then((res) => {
-              router.push(`/order/?success=true`);
-            });
+            return request
+              .post('/paypal/paypal-transaction-complete', {
+                orderID: data.orderID,
+              })
+              .then((res) => {
+                router.push(`/order/?success=true`);
+              });
           });
         }}
         catchError={(err) => {

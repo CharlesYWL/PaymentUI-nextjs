@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { Header, MyPaypalButton } from 'components';
 import { loadStripe } from '@stripe/stripe-js';
 import React, { useState, useEffect } from 'react';
-import { centToDollar } from 'utils';
+import { centToDollar, request } from 'utils';
 import { IconButton, Button } from '@material-ui/core';
 import Head from 'next/head';
 
@@ -16,16 +16,10 @@ export default function GoodDetail(initialData) {
 
   const handleClick = async (event) => {
     let stripe = await stripePromise;
-
-    fetch('http://localhost:8000/stripe/create-checkout-session-single', {
-      method: 'POST',
-      headers: new Headers({ 'content-type': 'application/json' }),
-      body: JSON.stringify({ id: goodId, quantity: 1 }),
-    })
-      .then((res) => {
-        const session = res.json();
-        console.log(session);
-        return session;
+    request
+      .post('/stripe/create-checkout-session-single', {
+        id: goodId,
+        quantity: 1,
       })
       .then((session) => {
         console.log(session);
@@ -37,8 +31,6 @@ export default function GoodDetail(initialData) {
         console.log(err);
       });
   };
-
-  const handleClickPaypal = async (event) => {};
 
   const handleClickVisa = async () => {};
 

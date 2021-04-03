@@ -1,18 +1,15 @@
 import { Button } from '@material-ui/core';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { centToDollar } from 'utils';
+import { centToDollar, request } from 'utils';
 
 export default function Goods(initialState) {
   const [goods, setGoods] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     console.log(initialState);
-    fetch('http://localhost:8000/stripe/get-goods')
-      .then((res) => {
-        return res.json();
-      })
+    request
+      .get('/stripe/get-goods')
       .then((res) => {
         console.log(res);
         if ('itemList' in res) setGoods(res.itemList);

@@ -1,5 +1,9 @@
 const withPlugins = require('next-compose-plugins');
 const optimizedImages = require('next-optimized-images');
+const {
+  PHASE_DEVELOPMENT_SERVER,
+  PHASE_PRODUCTION_BUILD,
+} = require('next/constants');
 
 module.exports = withPlugins([
   [
@@ -37,12 +41,30 @@ module.exports = withPlugins([
       },
     },
   ],
-  {
-    devIndicators: {
+  (phase) => {
+    console.log(phase);
+    const isDev = phase === PHASE_DEVELOPMENT_SERVER;
+    const isProd =
+      phase === PHASE_PRODUCTION_BUILD && process.env.STAGING !== '1';
+    const isStaging =
+      phase === PHASE_PRODUCTION_BUILD && process.env.STAGING === '1';
+
+    console.log(`isDev:${isDev}  isProd:${isProd}   isStaging:${isStaging}`);
+
+    const devIndicators = {
       autoPrerender: true,
-    },
-    future: {
+    };
+    const future = {
       webpack5: true,
-    },
+    };
+    const env = {
+      API_ROOT: () => {
+        if (isDev) return 'http://localhost:8000';
+        if (isProd) return 'https://0berox.deta.dev';
+        if (isStaging) return 'https://0berox.deta.dev';
+      },
+    };
+
+    return { devIndicators, future, env };
   },
 ]);
