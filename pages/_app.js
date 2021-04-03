@@ -2,10 +2,6 @@ import { Provider } from 'react-redux';
 import { store } from 'store';
 import 'style/styles.css';
 import React, { useEffect } from 'react';
-// if (typeof window !== 'undefined') {
-//   require('jquery');
-//   require('popper.js');
-// }
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {

@@ -85,3 +85,8 @@ input:focus{
   height: 300px;
   object-fit: cover;
 }
+
+.btn-icon{
+  height: 35px;
+  object-fit: scale-down;
+}
