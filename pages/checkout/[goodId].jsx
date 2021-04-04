@@ -95,7 +95,7 @@ export default function GoodDetail(initialData) {
 export async function getServerSideProps(context) {
   // get id from url
   const id = context.query.goodId;
-  let item = await fetch(`http://localhost:8000/stripe/get-goods/${id}`);
+  let item = await request.get(`/stripe/get-goods/${id}`);
   item = await item.json();
   return { props: { item: item } };
 }
