@@ -1,4 +1,5 @@
 const API_ROOT = process.env.API_ROOT;
+console.log(API_ROOT);
 const responseBody = (response) => {
   if (!response.ok) {
     return response.json().then((obj) => {

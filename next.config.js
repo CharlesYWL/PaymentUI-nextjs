@@ -42,14 +42,15 @@ module.exports = withPlugins([
     },
   ],
   (phase) => {
-    console.log(phase);
-    const isDev = phase === PHASE_DEVELOPMENT_SERVER;
-    const isProd =
-      phase === PHASE_PRODUCTION_BUILD && process.env.STAGING !== '1';
-    const isStaging =
-      phase === PHASE_PRODUCTION_BUILD && process.env.STAGING === '1';
+    // const isDev = phase === PHASE_DEVELOPMENT_SERVER;
+    const isDev = process.env.NODE_ENV !== 'production';
+    const isProd = !isDev;
+    // const isProd =
+    //   phase === PHASE_PRODUCTION_BUILD && process.env.STAGING !== '1';
+    // const isStaging =
+    //   phase === PHASE_PRODUCTION_BUILD && process.env.STAGING === '1';
 
-    console.log(`isDev:${isDev}  isProd:${isProd}   isStaging:${isStaging}`);
+    console.log(`isDev:${isDev}  isProd:${isProd}`);
 
     const devIndicators = {
       autoPrerender: true,
@@ -58,11 +59,11 @@ module.exports = withPlugins([
       webpack5: true,
     };
     const env = {
-      API_ROOT: () => {
+      API_ROOT: (() => {
         if (isDev) return 'http://localhost:8000';
         if (isProd) return 'https://0berox.deta.dev';
-        if (isStaging) return 'https://0berox.deta.dev';
-      },
+        // if (isStaging) return 'https://0berox.deta.dev';
+      })(),
     };
 
     return { devIndicators, future, env };
