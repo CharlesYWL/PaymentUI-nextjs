@@ -96,6 +96,5 @@ export async function getServerSideProps(context) {
   // get id from url
   const id = context.query.goodId;
   let item = await request.get(`/stripe/get-goods/${id}`);
-  item = await item.json();
   return { props: { item: item } };
 }
